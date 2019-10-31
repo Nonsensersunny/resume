@@ -1,0 +1,32 @@
+{
+  "name": "Zyven's Resume",
+  "version": "1.0.0",
+  "description": "Wow, such a beautiful resume",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nonsensersunny/Resume.git"
+  },
+  "keywords": [
+    "resume"
+  ],
+  "author": "Nonsensersunny",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Nonsensersunny/Resume/issues"
+  },
+  "homepage": "https://github.com/Nonsensersunny/Resume#readme",
+  "devDependencies": {
+    "browser-sync": "^2.10.0",
+    "gulp": "^4.0.0",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-order": "^1.2.0",
+    "gulp-uglify-es": "^2.0.0"
+  }
+}
