@@ -28,5 +28,6 @@ const zh = {
     skills: {
         title: "技能清单",
     },
-    latest_update: "最后更新于"
+    latest_update: "最后更新于",
+    download: "下载",
 }

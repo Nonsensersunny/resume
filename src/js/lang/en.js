@@ -28,5 +28,6 @@ const en = {
     skills: {
         title: "Skills",
     },
-    latest_update: "Latest update at"
+    latest_update: "Latest update at",
+    download: "Download",
 }

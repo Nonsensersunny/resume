@@ -6,4 +6,7 @@ fast: env
 	gulp
 
 run:
-	gulp
+	gulp run
+
+docker:
+	docker build -t resume .
