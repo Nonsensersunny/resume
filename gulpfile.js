@@ -46,5 +46,5 @@ function server() {
 
 exports.css = css;
 exports.js = js;
-exports.server = server;
-exports.default = gulp.parallel(css, js, server);
+exports.run = gulp.parallel(css, js, server);
+exports.default = gulp.parallel(css, js);
