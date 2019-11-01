@@ -2,6 +2,7 @@
   "name": "aresume",
   "version": "1.0.0",
   "description": "Wow, such a beautiful resume",
+  "homepage": "https://Nonsensersunny.github.io/resume",
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,7 +19,6 @@
   "bugs": {
     "url": "https://github.com/Nonsensersunny/Resume/issues"
   },
-  "homepage": "https://github.com/Nonsensersunny/Resume#readme",
   "devDependencies": {
     "browser-sync": "^2.10.0",
     "gulp": "^4.0.0",
