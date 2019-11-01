@@ -1,19 +1,19 @@
 const my_avatar = "https://zyven.oss-cn-beijing.aliyuncs.com/resume/zyven.jpg";
-const my_tel = "15927421025";
+const my_tel = "12345678910";
 const my_mail = "zyvenzhao@163.com";
 const my_wechat = "Nonsensersunny";
 const my_qq = "1074687883";
 const my_name = {
     "en": "Zyven Zhao",
-    "zh": "赵菊文",
+    "zh": "Zyven Zhao",
 }
 const my_gender = {
     "en": "Male",
     "zh": "男"
 }
 const my_undergraduate = {
-    "en": "Wuhan Institute of Technology",
-    "zh": "武汉工程大学"
+    "en": "Tsinghua University",
+    "zh": "清华大学"
 }
 const my_postgraduate = {
     "en": "Beijing Institute of Technology",
