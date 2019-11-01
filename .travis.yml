@@ -9,7 +9,7 @@ before_script:
   - npm install -g gulp
 
 script:
-  - gulp
+  - ./node_modules/.bin/gulp
 
 deploy:
   provider: pages
