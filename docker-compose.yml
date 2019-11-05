@@ -1,0 +1,6 @@
+version: "3.5"
+services:
+  resume:
+    build: .
+    ports:
+    - "8902:80"

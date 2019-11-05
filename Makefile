@@ -9,4 +9,4 @@ run:
 	gulp run
 
 docker:
-	docker build -t resume .
+	docker-compose up -d

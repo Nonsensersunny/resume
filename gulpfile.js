@@ -24,7 +24,7 @@ function js() {
     .pipe(order([
         'src/js/lang/*.js',
         'src/js/i18n.js',
-        'src/js/info.js',
+        'src/js/info.*',
         'src/js/main.js'
     ], {
         base: './'
