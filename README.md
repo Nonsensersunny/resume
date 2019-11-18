@@ -1,5 +1,9 @@
 # My Resume
 
+![Build Status](https://travis-ci.com/Nonsensersunny/resume.svg?branch=master)
+![Language](https://img.shields.io/badge/Language-JavaScript-Green)
+
+
 [resume.zyven.top](http://resume.zyven.top)
 
 ## Introduction
