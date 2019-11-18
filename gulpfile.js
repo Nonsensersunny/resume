@@ -1,6 +1,6 @@
 const gulp        = require('gulp');
 const sass        = require('gulp-sass');
-const minifyCSS   = require('gulp-minify-css');
+const cleanCSS   = require('gulp-clean-css');
 const rename      = require('gulp-rename');
 const browserSync = require('browser-sync').create();
 const concat      = require('gulp-concat');
@@ -10,7 +10,7 @@ var uglify        = require('gulp-uglify-es').default;
 function css() {
     return gulp.src('src/css/*.sass')
     .pipe(sass())
-    .pipe(minifyCSS())
+    .pipe(cleanCSS())
     .pipe(rename({
         suffix: '.min'
     }))
