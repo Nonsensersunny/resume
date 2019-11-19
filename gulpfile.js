@@ -8,7 +8,7 @@ const order       = require('gulp-order');
 var uglify        = require('gulp-uglify-es').default;
 
 function css() {
-    return gulp.src('src/css/*.sass')
+    return gulp.src('src/css/*.scss')
     .pipe(sass())
     .pipe(cleanCSS())
     .pipe(rename({
