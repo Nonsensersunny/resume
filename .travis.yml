@@ -10,4 +10,4 @@ before_script:
 
 script:
   - ./node_modules/.bin/gulp
-  - make docker
+  - make docker-build

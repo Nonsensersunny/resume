@@ -8,5 +8,8 @@ fast: env
 run:
 	gulp run
 
+docker-build:
+	docker-compose build
+
 docker:
 	docker-compose up -d
