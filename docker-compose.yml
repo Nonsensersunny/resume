@@ -4,3 +4,5 @@ services:
     build: .
     ports:
     - "8902:80"
+    volumes:
+    - /data/zyven-resume/app.js:/usr/share/nginx/html/dist/js/app.min.js

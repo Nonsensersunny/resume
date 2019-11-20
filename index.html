@@ -72,7 +72,7 @@
                                 <div class="circle"></div>
                                 <h4>{{ pro.name[i18n.locale] }}</h4>
                                 <p>{{ pro.intro[i18n.locale] }}</p>
-                                <p>{{ pro.techs[i18n.locale] }}</p>
+                                <p class="techs">{{ pro.techs[i18n.locale] }}</p>
                                 <img :src="pro.thumb" data-action="zoom" width="250px">
                             </li>
                         </ul>
@@ -90,7 +90,7 @@
                             </h4>
                             <p>{{ pro.intro[i18n.locale] }}</p>
                             <p>{{ pro.fame[i18n.locale] }}</p>
-                            <p>{{ pro.techs[i18n.locale] }}</p>
+                            <p class="techs">{{ pro.techs[i18n.locale] }}</p>
                             <img :src="pro.thumb" data-action="zoom">
                         </li>
                     </ul>
