@@ -112,7 +112,7 @@
         </div>
     </div>
     <footer id="footer">
-        <p>Theme by <a :href="theme" target="_blank">{{ github.name }}</a>. Made with <i class="icon-heart throb" style="color: #d43f57;"></i> by {{ github.name }}. <a href="#" target="_blank">PDF {{ $t('message.download') }}</a>. {{ $t('message.latest_update') }} {{ latest_update }}</p>
+        <p>Theme by <a :href="theme" target="_blank">{{ github.name }}</a>. Made with <i class="icon-heart throb" style="color: #d43f57;"></i> by {{ github.name }}. <a :href="pdf_resume">PDF {{ $t('message.download') }}</a> {{ $t('message.latest_update') }} {{ latest_update }}</p>
     </footer>
     <script src="dist/js/app.min.js"></script>
     <script src="lib/zoom.min.js"></script>

@@ -36,6 +36,7 @@ new Vue({
     data: {
         github: my_github,
         theme: my_theme,
+        pdf_resume: my_pdf_resume,
         latest_update: my_latest_update,
     },
     i18n,
