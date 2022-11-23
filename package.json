@@ -22,7 +22,7 @@
   "devDependencies": {
     "lodash.template": "^4.5.0",
     "clean-css": "^4.2.1",
-    "browser-sync": "^2.10.0",
+    "browser-sync": "^2.27.10",
     "gulp": "^4.0.0",
     "gulp-clean-css": "^4.2.0",
     "gulp-rename": "^1.2.2",
