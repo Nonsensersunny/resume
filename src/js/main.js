@@ -29,7 +29,7 @@ new Vue({
         }
     },
     i18n
-})
+});
 
 new Vue({
     el: '#footer',
@@ -40,4 +40,4 @@ new Vue({
         latest_update: my_latest_update,
     },
     i18n,
-})
+});

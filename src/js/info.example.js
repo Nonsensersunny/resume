@@ -1,5 +1,5 @@
 const my_avatar = "https://zyven.oss-cn-beijing.aliyuncs.com/resume/zyven.jpg";
-const my_tel = "12345678910";
+const my_tel = "123456";
 const my_mail = "zyvenzhao@163.com";
 const my_wechat = "Nonsensersunny";
 const my_qq = "1074687883";

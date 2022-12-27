@@ -1,7 +1,7 @@
 {
   "name": "aresume",
   "version": "1.0.0",
-  "description": "Wow, such a beautiful resume",
+  "description": "Wow, this is such a beautiful resume",
   "homepage": "https://Nonsensersunny.github.io/resume",
   "main": "index.html",
   "scripts": {
@@ -20,16 +20,20 @@
     "url": "https://github.com/Nonsensersunny/Resume/issues"
   },
   "devDependencies": {
-    "browser-sync": "^2.10.0",
-    "clean-css": "^4.2.1",
+    "del": "^6.0.0",
     "gulp": "^4.0.0",
     "gulp-clean-css": "^4.2.0",
     "gulp-concat": "^2.6.1",
+    "gulp-connect": "^5.7.0",
+    "gulp-livereload": "^4.0.2",
     "gulp-order": "^1.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^5.1.0",
-    "gulp-uglify-es": "^2.0.0",
+    "gulp-uglify-es": "^3.0.0",
+    "leancloud-storage": "^4.14.0",
     "lodash.template": "^4.5.0",
-    "sass": "^1.57.1"
+    "open": "^8.4.0",
+    "sass": "^1.57.1",
+    "streamqueue": "^1.1.2"
   }
 }

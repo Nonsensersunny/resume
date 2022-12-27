@@ -2,14 +2,15 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Zyven's Simple Resume</title>
+    <title>My Resume</title>
     <meta name="description" content="初出茅庐的后端工程师。">
     <meta name="keywords" content="后端,工作,简历">
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="dist/css/style.min.css">
     <link rel="stylesheet" href="dist/css/fontello.min.css">
     <link rel="stylesheet" href="lib/zoom.css">
-    <script src="lib/vue.js"></script>
+    <script src="lib/av-min.js"></script>
+    <script src="https://unpkg.com/vue@2.5.2/dist/vue.js"></script>
     <script src="lib/vue-i18n.js"></script>
     <script src="lib/jquery.min.js"></script>
     <script>
@@ -30,8 +31,8 @@
                 <img :src="avatar_url" data-action="zoom" style="border-radius: 100%">
                 <h1>{{ $t('message.title') }}</h1>
                 <h2>{{ motto[i18n.locale] }}</h2>
-                <span v-for="(v, k, i) in langs" :key="k">
-                    <button @click="select_lang(k)">{{ v }}</button>
+                <span v-for="(v, k, i) in langs" :key="i">
+                    <button @click="select_lang(k)" class="lang_selector">{{ v }}</button>
                 </span>
             </div>
             <ul class="side-info">
@@ -65,10 +66,10 @@
                 </li>
                 <li>
                     <dt><i class="icon-bookmark"></i>{{ $t('message.experience.title') }}</dt>
-                    <div v-for="exp in experience" :key="exp.name">
+                    <div v-for="(exp, idx) in experience" :key="idx">
                         <h3><img :src="exp.logo" data-action="zoom"><span>{{ exp.name[i18n.locale] }}({{ exp.date }})</span></h3>
                         <ul class="exp">
-                            <li v-for="pro in exp.projects" v-for="pro.name">
+                            <li v-for="(pro, idx) in exp.projects" :key="idx">
                                 <div class="circle"></div>
                                 <h4>{{ pro.name[i18n.locale] }}</h4>
                                 <p>{{ pro.intro[i18n.locale] }}</p>
@@ -80,7 +81,7 @@
                     
                     <h3>{{ $t('message.experience.personal_pros') }}</h3>
                     <ul class="exp">
-                        <li v-for="pro in projects" v-for="pro.name">
+                        <li v-for="(pro, idx) in projects" v-for="idx">
                             <div class="circle"></div>
                             <h4>
                                 <span>{{ pro.name[i18n.locale] }}</span>
@@ -97,13 +98,13 @@
                 </li>
                 <li>
                     <dt><i class="icon-bookmark"></i>{{ $t('message.skills.title') }}</dt>
-                    <div v-for="skill in skills" :key="skill.category">
+                    <div v-for="(skill, index) in skills" :key="index">
                         <h3>{{ skill.category[i18n.locale] }}</h3>
                         <ul class="exp">
-                            <li v-for="content in skill.contents" :key="content.name">
+                            <li v-for="(content, idx) in skill.contents" :key="idx">
                                 <div class="circle"></div>
                                 <h4>{{ content.name[i18n.locale] }}</h4>
-                                <p v-for="intr in content.intro" :key="intr">{{ intr[i18n.locale] }}</p>
+                                <p v-for="(intr, index) in content.intro" :key="index">{{ intr[i18n.locale] }}</p>
                             </li>
                         </ul>
                     </div>

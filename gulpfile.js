@@ -2,49 +2,85 @@ const gulp        = require('gulp');
 const sass        = require('gulp-sass')(require('sass'));
 const cleanCSS    = require('gulp-clean-css');
 const rename      = require('gulp-rename');
-const browserSync = require('browser-sync').create();
 const concat      = require('gulp-concat');
 const order       = require('gulp-order');
-var uglify        = require('gulp-uglify-es').default;
+const livereload  = require('gulp-livereload');
+const connect     = require('gulp-connect');
+const open        = require('open');
+const del         = require('del');
+const uglify      = require('gulp-uglify-es').default;
 
-function css() {
-    return gulp.src('src/css/*.scss')
-    .pipe(sass())
-    .pipe(cleanCSS())
-    .pipe(rename({
-        suffix: '.min'
-    }))
-    .pipe(gulp.dest('dist/css'), {
-        sourcemaps: true
-    })
+var paths = {
+    styles: {
+        src: 'src/css/*.scss',
+        dest: 'dist/css'
+    },
+    scripts: {
+        src: 'src/js/**/*.js',
+        dest: 'dist/js'
+    }
+};
+
+var serverPort = 3000;
+
+var runAddr = 'http://localhost:' + serverPort.toString();
+
+function clean() {
+    return del(['dist']);
 }
 
-function js() {
-    return gulp.src(['src/js/*.js', 'src/js/lang/*.js'])
-    .pipe(order([
-        'src/js/lang/*.js',
-        'src/js/i18n.js',
-        'src/js/info.*',
-        'src/js/main.js'
-    ], {
-        base: './'
-    }))
-    .pipe(concat('app.min.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest('dist/js'), {
-        sourcemaps: true
-    })
+function styles() {
+    return gulp.src(paths.styles.src)
+        .pipe(sass())
+        .pipe(cleanCSS())
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(gulp.dest(paths.styles.dest), { sourcemaps: true })
+        .pipe(livereload())
+        .pipe(connect.reload());
 }
 
-function server() {
-    return browserSync.init({
-        server: {
-            baseDir: './'
-        }
-    })
+function scripts() {
+    return gulp.src(paths.scripts.src)
+        .pipe(order([
+            'src/js/lang/*.js',
+            'src/js/i18n.js',
+            'src/js/**/*.js'
+        ], { 
+            base: './',
+        }))
+        .pipe(concat('app.js'))
+        .pipe(uglify())
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(gulp.dest(paths.scripts.dest))
+        .pipe(livereload())
+        .pipe(connect.reload());
 }
 
-exports.css = css;
-exports.js = js;
-exports.run = gulp.parallel(css, js, server);
-exports.default = gulp.parallel(css, js);
+function run() {
+    build();
+
+    connect.server({
+        root: "./",
+        livereload: true,
+        port: serverPort,
+    })
+
+    open(runAddr);
+
+    watch();
+}
+
+function watch() {
+    gulp.watch(paths.styles.src, styles);
+    gulp.watch(paths.scripts.src, scripts);
+}
+
+var build = gulp.series(clean, gulp.parallel(styles, scripts));
+
+exports.styles = styles;
+exports.scripts = scripts;
+exports.run = run;
+exports.watch = watch;
+exports.build = build;
+
+exports.default = build;

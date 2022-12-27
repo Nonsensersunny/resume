@@ -6,7 +6,7 @@ fast: env
 	gulp
 
 run:
-	gulp run
+	@gulp run
 
 docker-build:
 	docker-compose build
