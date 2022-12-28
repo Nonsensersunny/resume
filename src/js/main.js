@@ -1,5 +1,5 @@
 new Vue({
-    el: '#resume',
+    // el: '#resume',
     data: {
         avatar_url: my_avatar,
         motto: my_motto,
@@ -32,7 +32,7 @@ new Vue({
 });
 
 new Vue({
-    el: '#footer',
+    // el: '#footer',
     data: {
         github: my_github,
         theme: my_theme,

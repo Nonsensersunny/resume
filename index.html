@@ -9,8 +9,9 @@
     <link rel="stylesheet" href="dist/css/style.min.css">
     <link rel="stylesheet" href="dist/css/fontello.min.css">
     <link rel="stylesheet" href="lib/zoom.css">
-    <script src="lib/av-min.js"></script>
+    <!-- <script src="lib/av-min.js"></script> -->
     <script src="https://unpkg.com/vue@2.5.2/dist/vue.js"></script>
+    <script src="lib/av-live-query-min.js"></script>
     <script src="lib/vue-i18n.js"></script>
     <script src="lib/jquery.min.js"></script>
     <script>
@@ -28,60 +29,60 @@
     <div class="container" id="resume">
         <div class="sidebar">
             <div class="title">
-                <img :src="avatar_url" data-action="zoom" style="border-radius: 100%">
+                <img :src="basicInfo.avatar" data-action="zoom" style="border-radius: 100%">
                 <h1>{{ $t('message.title') }}</h1>
-                <h2>{{ motto[i18n.locale] }}</h2>
-                <span v-for="(v, k, i) in langs" :key="i">
+                <h2>{{ basicInfo.motto[i18n.locale] }}</h2>
+                <span v-for="(v, k, i) in langs" :key="i" v-if="settings.langSwitch">
                     <button @click="select_lang(k)" class="lang_selector">{{ v }}</button>
                 </span>
             </div>
             <ul class="side-info">
                 <li class="someRight">
                     <dt><i class="icon-bookmark"></i>{{ $t('message.contact.title') }}</dt>
-                    <dd><i class="icon-phone-1"></i>{{ $t('message.contact.phone') }}: {{ tel }}</dd>
-                    <dd><i class="icon-mail-alt"></i>{{ $t('message.contact.mail') }}: <a :href="'mailto:' + mail" target="_blank">{{ mail }}</a></dd>
-                    <dd><i class="icon-wechat"></i>{{ $t('message.contact.wechat') }}: {{ wechat }}</dd>
-                    <dd><i class="icon-qq"></i>{{ $t('message.contact.qq') }}: <a :href="'http://wpa.qq.com/msgrd?v=3&uin=' + qq + '&site=qq&menu=yes'" target="_blank">{{ qq }}</a></dd>
+                    <dd><i class="icon-phone-1"></i>{{ $t('message.contact.phone') }}: {{ contact.tel }}</dd>
+                    <dd><i class="icon-mail-alt"></i>{{ $t('message.contact.mail') }}: <a :href="'mailto:' + contact.mail" target="_blank">{{ contact.mail }}</a></dd>
+                    <dd><i class="icon-wechat"></i>{{ $t('message.contact.wechat') }}: {{ contact.wechat }}</dd>
+                    <dd><i class="icon-qq"></i>{{ $t('message.contact.qq') }}: <a :href="'http://wpa.qq.com/msgrd?v=3&uin=' + contact.qq + '&site=qq&menu=yes'" target="_blank">{{ contact.qq }}</a></dd>
                 </li>
-                <li class="someRight">
+                <li class="someRight" v-if="settings.expectSwitch">
                     <dt><i class="icon-bookmark"></i>{{ $t('message.application.title') }}</dt>
-                    <dd>{{ want[i18n.locale] }}</dd>
+                    <dd>{{ basicInfo.expect[i18n.locale] }}</dd>
                 </li>
             </ul>
-            <div class="note">
-                <p>{{ intro[i18n.locale] }}</p>
+            <div class="note" v-if="settings.introDisplaySwitch">
+                <p>{{ basicInfo.intro[i18n.locale] }}</p>
             </div>
         </div>
         <div class="main">
             <ul class="main-info">
                 <li class="someRight">
                     <dt><i class="icon-bookmark"></i>{{ $t('message.basic.title') }}</dt>
-                    <dd><strong>{{ $t('message.basic.personal_info') }}:</strong> <span>{{ name[i18n.locale] }} / {{ gender[i18n.locale] }}</span></dd>
-                    <dd><strong>{{ $t('message.basic.edu_background') }}:</strong> <span>{{ edu_background[i18n.locale] }}</span></dd>
-                    <dd><strong>{{ $t('message.basic.undergraduate') }}:</strong> <span>{{ undergraduate[i18n.locale] }}</span></dd>
-                    <dd><strong>{{ $t('message.basic.postgraduate') }}:</strong> <span>{{ postgraduate[i18n.locale] }}</span></dd>
-                    <dd><strong>{{ $t('message.basic.working_year') }}:</strong> <span>{{ working_year[i18n.locale] }}</span></dd>
-                    <dd><strong>{{ $t('message.basic.blog') }}:</strong> <a :href="blog" target="_blank">{{ blog }}</a></dd>
-                    <dd><strong>{{ $t('message.basic.github') }}:</strong> <a :href="github.url" target="_blank">{{ github.url }}</a><iframe :src="'https://ghbtns.com/github-btn.html?user=' + github.name + '&type=follow&count=true'" frameborder="0" scrolling="0" width="170px" height="20px"></iframe></dd>
+                    <dd><strong>{{ $t('message.basic.personal_info') }}:</strong> <span>{{ basicInfo.name[i18n.locale] }} / {{ basicInfo.gender[i18n.locale] }}</span></dd>
+                    <dd><strong>{{ $t('message.basic.edu_background') }}:</strong> <span>{{ basicInfo.edu_background[i18n.locale] }}</span></dd>
+                    <dd><strong>{{ $t('message.basic.undergraduate') }}:</strong> <span>{{ basicInfo.undergraduate[i18n.locale] }}</span></dd>
+                    <dd><strong>{{ $t('message.basic.postgraduate') }}:</strong> <span>{{ basicInfo.postgraduate[i18n.locale] }}</span></dd>
+                    <dd><strong>{{ $t('message.basic.working_year') }}:</strong> <span>{{ basicInfo.working_year[i18n.locale] }}</span></dd>
+                    <dd><strong>{{ $t('message.basic.blog') }}:</strong> <a :href="basicInfo.blog" target="_blank">{{ basicInfo.blog }}</a></dd>
+                    <dd><strong>{{ $t('message.basic.github') }}:</strong> <a :href="basicInfo.github.url" target="_blank">{{ basicInfo.github.url }}</a><iframe :src="'https://ghbtns.com/github-btn.html?user=' + basicInfo.github.name + '&type=follow&count=true'" frameborder="0" scrolling="0" width="170px" height="20px"></iframe></dd>
                 </li>
                 <li>
                     <dt><i class="icon-bookmark"></i>{{ $t('message.experience.title') }}</dt>
-                    <div v-for="(exp, idx) in experience" :key="idx">
+                    <div v-for="(exp, idx) in workExperience.experiences" :key="idx">
                         <h3><img :src="exp.logo" data-action="zoom"><span>{{ exp.name[i18n.locale] }}({{ exp.date }})</span></h3>
                         <ul class="exp">
                             <li v-for="(pro, idx) in exp.projects" :key="idx">
                                 <div class="circle"></div>
                                 <h4>{{ pro.name[i18n.locale] }}</h4>
-                                <p>{{ pro.intro[i18n.locale] }}</p>
                                 <p class="techs">{{ pro.techs[i18n.locale] }}</p>
-                                <img :src="pro.thumb" data-action="zoom" width="250px">
+                                <p>{{ pro.intro[i18n.locale] }}</p>
+                                <img :src="pro.thumb" data-action="zoom" width="250px" v-if="pro.thumb !== undefined">
                             </li>
                         </ul>
                     </div>
                     
                     <h3>{{ $t('message.experience.personal_pros') }}</h3>
                     <ul class="exp">
-                        <li v-for="(pro, idx) in projects" v-for="idx">
+                        <li v-for="(pro, idx) in projects.projects" v-for="idx">
                             <div class="circle"></div>
                             <h4>
                                 <span>{{ pro.name[i18n.locale] }}</span>
@@ -89,22 +90,22 @@
                                 <a :href="pro.address" target="_blank"><i class="icon-link"></i>Demo</a>
                                 <iframe :src="pro.github" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
                             </h4>
+                            <p class="techs">{{ pro.techs[i18n.locale] }}</p>
                             <p>{{ pro.intro[i18n.locale] }}</p>
                             <p>{{ pro.fame[i18n.locale] }}</p>
-                            <p class="techs">{{ pro.techs[i18n.locale] }}</p>
-                            <img :src="pro.thumb" data-action="zoom">
+                            <img :src="pro.thumb" data-action="zoom" v-if="pro.thumb !== undefined">
                         </li>
                     </ul>
                 </li>
                 <li>
                     <dt><i class="icon-bookmark"></i>{{ $t('message.skills.title') }}</dt>
-                    <div v-for="(skill, index) in skills" :key="index">
+                    <div v-for="(skill, index) in skills.skills" :key="index">
                         <h3>{{ skill.category[i18n.locale] }}</h3>
                         <ul class="exp">
                             <li v-for="(content, idx) in skill.contents" :key="idx">
                                 <div class="circle"></div>
                                 <h4>{{ content.name[i18n.locale] }}</h4>
-                                <p v-for="(intr, index) in content.intro" :key="index">{{ intr[i18n.locale] }}</p>
+                                <p :key="index">{{ content.intro[i18n.locale] }}</p>
                             </li>
                         </ul>
                     </div>
@@ -113,7 +114,7 @@
         </div>
     </div>
     <footer id="footer">
-        <p>Theme by <a :href="theme" target="_blank">{{ github.name }}</a>. Made with <i class="icon-heart throb" style="color: #d43f57;"></i> by {{ github.name }}. <a :href="pdf_resume">PDF {{ $t('message.download') }}</a> {{ $t('message.latest_update') }} {{ latest_update }}</p>
+        <p>Theme by <a href="https://github.com/Nonsensersunny/resume" target="_blank">{{ basicInfo.github.name }}</a>. Made with <i class="icon-heart throb" style="color: #d43f57;"></i> by {{ basicInfo.github.name }}. <a :href="basicInfo.pdf_resume">PDF {{ $t('message.download') }}</a> {{ $t('message.latest_update') }} {{ lastUpdated }}</p>
     </footer>
     <script src="dist/js/app.min.js"></script>
     <script src="lib/zoom.min.js"></script>

@@ -8,13 +8,18 @@ class User {
     id
     userID
     pwd
+    updateCnt
+    viewCnt
+    lastUpdated
 
     contact
     basicInfo
     workExperience
+    personalProjects
     skills
+    settings
 
-    constructor(userID, pwd) {
+    constructor(userID, pwd="") {
         this.userID = userID;
         this.pwd = pwd;
     }
@@ -26,9 +31,11 @@ class User {
     getUserObjectID() {
         let query = new AV.Query(this.tableName());
         query.equalTo("user_id", this.userID);
-        // query.equalTo("pwd", this.pwd);
         return query.first().then((result) => {
             this.id = result.id;
+            this.updateCnt = result.get("update_cnt");
+            this.viewCnt = result.get("view_cnt");
+            this.lastUpdated = result.get("updatedAt");
             return result.id;
         });
     }
@@ -46,18 +53,74 @@ class User {
 
     load() {
         return this.getUserObjectID().then((userID) => {
-            let contact = new Contact("", "", "", "").from(this.id);
+            let contact = new Contact().from(this.id);
             let basicInfo = new BasicInfo().from(this.id);
             let workExperience = new WorkExperience().from(this.id);
+            let personalProjects = new PersonalProjects().from(this.id);
             let skills = new Skills().from(this.id);
-            return Promise.all([contact, basicInfo, workExperience, skills]).then((val) => {
+            let settings = new Settings().from(this.id);
+            return Promise.all([contact, basicInfo, workExperience, personalProjects, skills, settings]).then((val) => {
                 this.contact = val[0];
                 this.basicInfo = val[1];
                 this.workExperience = val[2];
-                this.skills = val[3];
+                this.personalProjects = val[3];
+                this.skills = val[4];
+                this.settings = val[5];
+                this.updateViewCnt();
                 return this;
             })
         })
+    }
+
+    updateViewCnt() {
+        let query = new AV.Object.createWithoutData(this.tableName(), this.id);
+        query.increment("view_cnt", 1);
+        query.save();
+    }
+
+    updateUpdateCnt() {
+        let query = new AV.Object.createWithoutData(this.tableName(), this.id);
+        query.increment("update_cnt", 1);
+        query.set("last_updated", Date.now());
+        query.save();
+    }
+
+    render() {
+        // this.settings.render();
+        new Vue({
+            el: '#resume',
+            data: {
+                contact: this.contact,
+                basicInfo: this.basicInfo,
+                workExperience: this.workExperience,
+                skills: this.skills,
+                projects: this.personalProjects,
+                i18n: i18n,
+                langs: langs,
+                settings: this.settings,
+            },
+            methods: {
+                select_lang(lang) {
+                    this.i18n.locale = lang;
+                }
+            },
+            i18n
+        });
+        
+        new Vue({
+            el: '#footer',
+            data: {
+                basicInfo: this.basicInfo,
+                lastUpdated: this.lastUpdated,
+            },
+            i18n,
+        });        
+    }
+
+    listen() {
+        Promise.all([this.settings.listen()]).then((val) => {
+            this.settings.render();
+        });
     }
 }
 
@@ -68,7 +131,7 @@ class Contact {
     wechat
     qq
 
-    constructor(tel, mail, wechat, qq) {
+    constructor(tel="", mail="", wechat="", qq="") {
         this.tel = tel;
         this.mail = mail;
         this.wechat = wechat;
@@ -96,6 +159,8 @@ class Contact {
 
 class BasicInfo {
     userID
+    avatar
+    motto
     name
     gender
     edu_background
@@ -106,10 +171,7 @@ class BasicInfo {
     github
     intro
     expect
-
-    constructor() {
-
-    }
+    pdf_resume
 
     tableName() {
         return "basic_info";
@@ -119,17 +181,19 @@ class BasicInfo {
         let query = new AV.Query(this.tableName());
         query.equalTo("user_id", userID);
         return query.first().then((basic) => {
-            let data = basic._serverData;
-            this.name = data.name;
-            this.gender = data.gender;
-            this.edu_background = data.edu_background;
-            this.undergraduate = data.undergraduate;
-            this.postgraduate = data.postgraduate;
-            this.working_year = data.working_year;
-            this.blog = data.blog;
-            this.github = data.github;
-            this.intro = data.intro;
-            this.expect = data.expect;
+            this.avatar = basic.get("avatar");
+            this.motto = ExtractI18nValue(basic, "motto");
+            this.name = ExtractI18nValue(basic, "name");
+            this.gender = ExtractI18nValue(basic, "gender");
+            this.edu_background = ExtractI18nValue(basic, "edu_background");
+            this.undergraduate = ExtractI18nValue(basic, "undergraduate");
+            this.postgraduate = ExtractI18nValue(basic, "postgraduate");
+            this.working_year = ExtractI18nValue(basic, "working_year");
+            this.blog = basic.get("blog");
+            this.github = ExtractGitHubValue(basic.get("github"));
+            this.intro = ExtractI18nValue(basic, "intro");
+            this.expect = ExtractI18nValue(basic, "expect");
+            this.pdf_resume = basic.get("pdf_resume");
             this.userID = userID;
             return this;
         })
@@ -145,18 +209,21 @@ class WorkExperience {
     }
 
     from(userID) {
+        this.userID = userID;
         let query = new AV.Query(this.tableName());
         query.equalTo("user_id", userID);
         return query.find().then((wes) => {
             let promises = [];
             wes.forEach((we, index) => {
-                let data = we._serverData;
-                let exp = new Experience(we.id, data.name, data.logo, data.date);
+                let exp = new Experience(we.id, 
+                    ExtractI18nValue(we, "name"),
+                    we.get("logo"), 
+                    we.get("date"));
                 promises.push(exp.loadProjects());
             });
             return Promise.all(promises).then((exps) => {
                 this.experiences = exps;
-                return exps;
+                return this;
             });
         })
     }
@@ -178,11 +245,49 @@ class Experience {
 
     loadProjects() {
         let query = new AV.Query("project");
+        console.log("exp id:", this.workExperienceID);
         query.equalTo("experience_id", this.workExperienceID);
+        query.equalTo("is_personal", false);
         return query.find().then((ps) => {
             let projects = [];
             ps.forEach((p, idx) => {
-                projects.push(new Project(this.workExperienceID, p.name, p.intro, p.techs, p.thumb, p.fame, p.source, p.address, p.github));
+                projects.push(new Project(this.workExperienceID, 
+                    ExtractI18nValue(p, "name"), 
+                    ExtractI18nValue(p, "intro"), 
+                    ExtractI18nValue(p, "techs"), 
+                    p.get("thumb"),
+                    ExtractI18nValue(p, "fame"), 
+                    p.get("source"),
+                    p.get("address"), 
+                    p.get("github")));
+            })
+            this.projects = projects;
+            return this;
+        })
+    }
+}
+
+class PersonalProjects {
+    userID
+    projects
+    
+    from(userID) {
+        this.userID = userID;
+        let query = new AV.Query("project");
+        query.equalTo("user_id", this.userID);
+        query.equalTo("is_personal", true);
+        return query.find().then((ps) => {
+            let projects = [];
+            ps.forEach((p, idx) => {
+                projects.push(new Project(this.workExperienceID, 
+                    ExtractI18nValue(p, "name"), 
+                    ExtractI18nValue(p, "intro"), 
+                    ExtractI18nValue(p, "techs"), 
+                    p.get("thumb"),
+                    ExtractI18nValue(p, "fame"), 
+                    p.get("source"),
+                    p.get("address"), 
+                    p.get("github")));
             })
             this.projects = projects;
             return this;
@@ -223,17 +328,18 @@ class Skills {
     }
 
     from(userID) {
+        this.userID = userID;
         let query = new AV.Query(this.tableName());
         query.equalTo("user_id", userID);
         return query.find().then((sks) => {
             let promises = [];
             sks.forEach((sk, idx) => {
-                let skill = new Skill(sk.id, sk._serverData.category);
-                promises.push(skill.loadSkillContens());
+                let skill = new Skill(sk.id, ExtractI18nValue(sk, "category"));
+                promises.push(skill.loadSkillContents());
             })
             return Promise.all(promises).then((val) => {
                 this.skills = val;
-                return val;
+                return this;
             })
         })
     }
@@ -249,14 +355,15 @@ class Skill {
         this.category = category;
     }
 
-    loadSkillContens() {
+    loadSkillContents() {
         let query = new AV.Query("skill_content");
         query.equalTo("skill_id", this.skillID);
         return query.find().then((cts) => {
-            console.log("contens:", cts)
             let contents = [];
             cts.forEach((c, idx) => {
-                contents.push(new SkillContent(this.skillID, c._serverData.name, c._serverData.intro));
+                contents.push(new SkillContent(this.skillID, 
+                    ExtractI18nValue(c, "name"),
+                    ExtractI18nValue(c, "intro")));
             })
             this.contents = contents;
             return this;
@@ -276,59 +383,81 @@ class SkillContent {
     }
 }
 
-let us = new User("test", "");
-us.load().then((u) => {
-    console.log("user:", u);
-    console.log("users:", us);
-});
+function I18nObj(zhVal, enVal="") {
+    if (zhVal === undefined) {
+        zhVal = "";
+    }
+    return {
+        en: enVal,
+        zh: zhVal,
+    };
+}
 
-let user = new User("test", "");
+function ExtractI18nValue(obj, field) {
+    return I18nObj(obj.get(field), obj.get(field+"_en"));
+}
+
+function ExtractGitHubValue(val) {
+    let resp = {
+        name: "GitHub",
+        url: "https://github.com/Nonsensersunny"
+    };
+    if (val === undefined) {
+        return resp;
+    }
+    resp.name = val.replace("https://github.com/", "");
+    resp.url = val;
+    return resp;
+}
+
+class Settings {
+    userID
+    langSwitch
+    expectSwitch
+    introDisplaySwitch
+
+    constructor(langSwitch=false, expectSwitch=false, introDisplaySwitch) {
+        this.langSwitch = langSwitch;
+        this.expectSwitch = expectSwitch;
+        this.introDisplaySwitch = introDisplaySwitch;
+    }
+
+    tableName() {
+        return "settings";
+    }
+
+    from(userID) {
+        this.userID = userID;
+        let query = new AV.Query(this.tableName());
+        query.equalTo("user_id", userID);
+        return query.first().then((setting) => {
+            this.langSwitch = setting.get("lang_switch");
+            this.expectSwitch = setting.get("expect_switch");
+            this.introDisplaySwitch = setting.get("intro_display_switch");
+            resumeSetting = this;
+            return this;
+        })
+    }
+
+    listen() {
+        let query = new AV.Query(this.tableName());
+        query.equalTo("user_id", this.userID);
+        return query.subscribe().then((lq) => {
+            return lq.on('update', (updatedObj, updatedKeys) => {
+                this.langSwitch = updatedObj.get("lang_switch");
+                this.expectSwitch = updatedObj.get("expect_switch");
+                this.introDisplaySwitch = updatedObj.get("intro_display_switch");
+                resumeSetting = this;
+                return this;
+            })
+        })
+    }
+}
+
+// load user
+let user = new User("test");
 user.load().then((user) => {
-    new Vue({
-        // el: '#resume',
-        data: {
-            avatar_url: "",
-            motto: "",
-
-            mail: user.contact.mail,
-            tel: user.contact.tel,
-            wechat: user.contact.wechat,
-            qq: user.contact.qq,
-
-            name: user.basicInfo.name,
-            gender: user.basicInfo.gender,
-            undergraduate: user.basicInfo.undergraduate,
-            postgraduate: user.basicInfo.postgraduate,
-            working_year: user.basicInfo.working_year,
-            edu_background: user.basicInfo.edu_background,
-            blog: user.basicInfo.blog,
-            github: user.basicInfo.github,
-            intro: user.basicInfo.intro,
-            want: user.basicInfo.expect,
-
-            experience: my_experience,
-            projects: my_projects,
-            skills: my_skills,
-            i18n: i18n,
-            langs: langs,
-        },
-        methods: {
-            select_lang(lang) {
-                this.i18n.locale = lang;
-            }
-        },
-        i18n
-    });
-    
-    new Vue({
-        // el: '#footer',
-        data: {
-            github: my_github,
-            theme: my_theme,
-            pdf_resume: my_pdf_resume,
-            latest_update: my_latest_update,
-        },
-        i18n,
-    });
-    
+    user.render();
+    console.log(user);
+    // user.listen();
 });
