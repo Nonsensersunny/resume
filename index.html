@@ -38,8 +38,19 @@
             </div>
             <ul class="side-info">
                 <li class="someRight">
-                    <dt><i class="icon-bookmark"></i>{{ $t('message.contact.title') }}</dt>
-                    <dd><i class="icon-phone-1"></i>{{ $t('message.contact.phone') }}: {{ contact.tel }}</dd>
+                    <dt>
+                        <i class="icon-bookmark"></i>{{ $t('message.contact.title') }}
+                        <button v-if="!switch_status('contact')" @click="trigger_edit('contact')">Edit</button>
+                        <span v-else>
+                            <button v-if="switch_status('contact')" @click="trigger_edit('contact')">Cancel</button>
+                            <button @click="submit('contact')">Submit</button>
+                        </span>
+                    </dt>
+                    <dd>
+                        <i class="icon-phone-1"></i>{{ $t('message.contact.phone') }}: 
+                        <span v-if="!switch_status('contact')">{{ contact.tel }}</span>
+                        <span v-else><input type="text" v-model="contact.tel"></span>
+                    </dd>
                     <dd><i class="icon-mail-alt"></i>{{ $t('message.contact.mail') }}: <a :href="'mailto:' + contact.mail" target="_blank">{{ contact.mail }}</a></dd>
                     <dd><i class="icon-wechat"></i>{{ $t('message.contact.wechat') }}: {{ contact.wechat }}</dd>
                     <dd><i class="icon-qq"></i>{{ $t('message.contact.qq') }}: <a :href="'http://wpa.qq.com/msgrd?v=3&uin=' + contact.qq + '&site=qq&menu=yes'" target="_blank">{{ contact.qq }}</a></dd>
@@ -56,8 +67,18 @@
         <div class="main">
             <ul class="main-info">
                 <li class="someRight">
-                    <dt><i class="icon-bookmark"></i>{{ $t('message.basic.title') }}</dt>
-                    <dd><strong>{{ $t('message.basic.personal_info') }}:</strong> <span>{{ basicInfo.name[i18n.locale] }} / {{ basicInfo.gender[i18n.locale] }}</span></dd>
+                    <dt>
+                        <i class="icon-bookmark"></i>{{ $t('message.basic.title') }}
+                        <button v-if="!switch_status('basicInfo')" @click="trigger_edit('basicInfo')">Edit</button>
+                        <span v-else>
+                            <button v-if="switch_status('basicInfo')" @click="trigger_edit('basicInfo')">Cancel</button>
+                            <button @click="submit('basicInfo')">Submit</button>
+                        </span>
+                    </dt>
+                    <dd><strong>{{ $t('message.basic.personal_info') }}:</strong> 
+                        <span v-if="!switch_status('basicInfo')">{{ basicInfo.name[i18n.locale] }} / {{ basicInfo.gender[i18n.locale] }}</span>
+                        <span v-else><input type="text" v-model="basicInfo.name[i18n.locale]"> / <select v-model="basicInfo.gender[i18n.locale]"><option value="男">男</option><option value="女">女</option></select></span>
+                    </dd>
                     <dd><strong>{{ $t('message.basic.edu_background') }}:</strong> <span>{{ basicInfo.edu_background[i18n.locale] }}</span></dd>
                     <dd><strong>{{ $t('message.basic.undergraduate') }}:</strong> <span>{{ basicInfo.undergraduate[i18n.locale] }}</span></dd>
                     <dd><strong>{{ $t('message.basic.postgraduate') }}:</strong> <span>{{ basicInfo.postgraduate[i18n.locale] }}</span></dd>

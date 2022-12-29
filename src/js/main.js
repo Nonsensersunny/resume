@@ -105,10 +105,32 @@ class User {
                 i18n: i18n,
                 langs: langs,
                 settings: this.settings,
+
+                edit_switch: {
+                    contact: false,
+                    basicInfo: false,
+                    workExperience: false,
+                    skills: false,
+                    per_projects: false,
+                }
             },
             methods: {
                 select_lang(lang) {
                     this.i18n.locale = lang;
+                },
+                trigger_edit(switchName) {
+                    this.edit_switch[switchName] = !this.edit_switch[switchName];
+                },
+                submit(name) {
+                    switch(name) {
+                        case "contact":
+                            structuredClone(this.contact)
+                    }
+                }
+            },
+            computed: {
+                switch_status: function() {
+                    return (name) => this.edit_switch[name];
                 }
             },
             i18n
@@ -132,6 +154,7 @@ class User {
 }
 
 class Contact {
+    id
     userID
     tel
     mail
@@ -153,18 +176,28 @@ class Contact {
         let query = new AV.Query(this.tableName());
         query.equalTo("user_id", userID);
         return query.first().then((contact) => {
-            let data = contact._serverData;
-            this.tel = data.tel;
-            this.mail = data.mail;
-            this.wechat = data.wechat;
-            this.qq = data.qq;
+            this.id = contact.id;
+            this.tel = contact.get("tel");
+            this.mail = contact.get("mail");
+            this.wechat = contact.get("wechat");
+            this.qq = contact.get("qq");
             this.userID = userID;
             return this;
         })
     }
+
+    update() {
+        let query = AV.Object.createWithoutData(this.tableName(), this.id);
+        query.set("tel", this.tel);
+        query.set("mail", this.mail);
+        query.set("wechat", this.wechat);
+        query.set("qq", this.qq);
+        query.save();
+    }
 }
 
 class BasicInfo {
+    id
     userID
     avatar
     motto
@@ -188,6 +221,7 @@ class BasicInfo {
         let query = new AV.Query(this.tableName());
         query.equalTo("user_id", userID);
         return query.first().then((basic) => {
+            this.id = basic.id;
             this.avatar = basic.get("avatar");
             this.motto = ExtractI18nValue(basic, "motto");
             this.name = ExtractI18nValue(basic, "name");
