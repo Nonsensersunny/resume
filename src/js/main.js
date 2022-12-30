@@ -35,7 +35,12 @@ class User {
             this.id = result.id;
             this.updateCnt = result.get("update_cnt");
             this.viewCnt = result.get("view_cnt");
-            this.lastUpdated = new Date(Date.parse(result.get("updatedAt"))).toLocaleDateString();
+            
+            let lastUpdated = result.get("last_updated");
+            if (lastUpdated === undefined) {
+                lastUpdated = result.get("updatedAt");
+            }
+            this.lastUpdated = new Date(Date.parse(lastUpdated)).toLocaleDateString();
             return result.id;
         });
     }
@@ -89,11 +94,12 @@ class User {
     updateUpdateCnt() {
         let query = new AV.Object.createWithoutData(this.tableName(), this.id);
         query.increment("update_cnt", 1);
-        query.set("last_updated", Date.now());
+        query.set("last_updated", new Date(Date.now()));
         query.save();
     }
 
     render() {
+        let that = this;
         new Vue({
             el: '#resume',
             data: {
@@ -111,8 +117,8 @@ class User {
                     basicInfo: false,
                     workExperience: false,
                     skills: false,
-                    per_projects: false,
-                }
+                    projects: false,
+                },
             },
             methods: {
                 select_lang(lang) {
@@ -122,10 +128,12 @@ class User {
                     this.edit_switch[switchName] = !this.edit_switch[switchName];
                 },
                 submit(name) {
-                    switch(name) {
-                        case "contact":
-                            structuredClone(this.contact)
-                    }
+                    this[name].update().then((res) => {
+                        this.trigger_edit(name);
+                        that.updateUpdateCnt();
+                    }).catch((err) => {
+                        alert(err);
+                    });
                 }
             },
             computed: {
@@ -192,7 +200,7 @@ class Contact {
         query.set("mail", this.mail);
         query.set("wechat", this.wechat);
         query.set("qq", this.qq);
-        query.save();
+        return query.save();
     }
 }
 
@@ -238,6 +246,24 @@ class BasicInfo {
             this.userID = userID;
             return this;
         })
+    }
+
+    update() {
+        let query = AV.Object.createWithoutData(this.tableName(), this.id);
+        query.set("avatar", this.avatar);
+        query.set("motto", this.motto);
+        query.set("name", this.name);
+        query.set("gender", this.gender);
+        query.set("edu_background", this.edu_background);
+        query.set("undergraduate", this.undergraduate);
+        query.set("postgraduate", this.postgraduate);
+        query.set("working_year", this.working_year);
+        query.set("blog", this.blog);
+        query.set("github", this.github);
+        query.set("intro", this.intro);
+        query.set("expect", this.expect);
+        query.set("pdf_resume", this.pdf_resume);
+        return query.save();
     }
 }
 

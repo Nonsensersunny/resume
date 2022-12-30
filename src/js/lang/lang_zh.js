@@ -15,7 +15,7 @@ const zh = {
         phone: "电话",
         mail: "邮箱",
         wechat: "微信",
-        qq: "QQ"
+        qq: "Q Q"
     },
     application: {
         title: "应聘岗位",
