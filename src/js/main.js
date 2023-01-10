@@ -35,7 +35,7 @@ class User {
             this.id = result.id;
             this.updateCnt = result.get("update_cnt");
             this.viewCnt = result.get("view_cnt");
-            
+
             let lastUpdated = result.get("last_updated");
             if (lastUpdated === undefined) {
                 lastUpdated = result.get("updatedAt");
@@ -79,7 +79,7 @@ class User {
                 });
 
                 this.updateViewCnt();
-                
+
                 return this;
             })
         })
@@ -143,7 +143,7 @@ class User {
             },
             i18n
         });
-        
+
         new Vue({
             el: '#footer',
             data: {
@@ -151,7 +151,7 @@ class User {
                 lastUpdated: this.lastUpdated,
             },
             i18n,
-        });        
+        });
     }
 
     listen() {
@@ -282,9 +282,9 @@ class WorkExperience {
         return query.find().then((wes) => {
             let experiences = [];
             wes.forEach((we, index) => {
-                experiences.push(new Experience(we.id, 
+                experiences.push(new Experience(we.id,
                     ExtractI18nValue(we, "name"),
-                    we.get("logo"), 
+                    we.get("logo"),
                     we.get("date")));
             });
             this.experiences = experiences;
@@ -312,7 +312,7 @@ class Experience {
 class PersonalProjects {
     userID
     projects
-    
+
     from(userID) {
         this.userID = userID;
         let query = new AV.Query("project");
@@ -320,17 +320,17 @@ class PersonalProjects {
         return query.find().then((ps) => {
             let projects = [];
             ps.forEach((p, idx) => {
-                projects.push(new Project(p.id, 
-                    p.get("user_id"), 
+                projects.push(new Project(p.id,
+                    p.get("user_id"),
                     p.get("is_personal"),
-                    p.get("experience_id"), 
-                    ExtractI18nValue(p, "name"), 
-                    ExtractI18nValue(p, "intro"), 
-                    ExtractI18nValue(p, "techs"), 
+                    p.get("experience_id"),
+                    ExtractI18nValue(p, "name"),
+                    ExtractI18nValue(p, "intro"),
+                    ExtractI18nValue(p, "techs"),
                     p.get("thumb"),
-                    ExtractI18nValue(p, "fame"), 
+                    ExtractI18nValue(p, "fame"),
                     p.get("source"),
-                    p.get("address"), 
+                    p.get("address"),
                     p.get("github")));
             })
             this.projects = projects;
@@ -339,7 +339,7 @@ class PersonalProjects {
     }
 
     split() {
-        let splittedProjects = { 
+        let splittedProjects = {
             exp_projects: {},
             per_projects: [],
          };
@@ -363,7 +363,7 @@ class Project {
     id
     userID
     isPersonal
-    experienceID 
+    experienceID
     name
     intro
     techs
@@ -398,14 +398,14 @@ class Project {
         return query.find().then((ps) => {
             let projects = [];
             ps.forEach((p, idx) => {
-                projects.push(new Project(this.workExperienceID, 
-                    ExtractI18nValue(p, "name"), 
-                    ExtractI18nValue(p, "intro"), 
-                    ExtractI18nValue(p, "techs"), 
+                projects.push(new Project(this.workExperienceID,
+                    ExtractI18nValue(p, "name"),
+                    ExtractI18nValue(p, "intro"),
+                    ExtractI18nValue(p, "techs"),
                     p.get("thumb"),
-                    ExtractI18nValue(p, "fame"), 
+                    ExtractI18nValue(p, "fame"),
                     p.get("source"),
-                    p.get("address"), 
+                    p.get("address"),
                     p.get("github")));
             })
             return projects;
@@ -455,7 +455,7 @@ class Skill {
         return query.find().then((cts) => {
             let contents = [];
             cts.forEach((c, idx) => {
-                contents.push(new SkillContent(this.skillID, 
+                contents.push(new SkillContent(this.skillID,
                     ExtractI18nValue(c, "name"),
                     ExtractI18nValue(c, "intro")));
             })
@@ -547,10 +547,33 @@ class Settings {
     }
 }
 
-// load user
-let user = new User("test");
-user.load().then((user) => {
-    user.render();
-    // console.log(user);
-    // user.listen();
-});
+// // load user
+// let user = new User("test");
+// user.load().then((user) => {
+//     user.render();
+//     // console.log(user);
+//     // user.listen();
+// });
+
+// const go = new Go();
+// const WASM_URL = "wasm.wasm";
+
+// let wasm = fetch(WASM_URL).then(resp =>
+//         resp.arrayBuffer()
+//     ).then(bytes =>
+//         WebAssembly.instantiate(bytes, go.importObject).then((obj) => {
+//             go.run(obj.instance);
+//             return Promise.resolve(obj.instance);
+//         })
+// );
+
+// go.importObject.env = {
+//     'add': function(x, y) {
+//         return x + y
+//     }
+//     // ... other functions
+// }
+
+// wasm.then((wasm) => {
+//     console.log('multiplied two numbers:', wasm.exports.multiply(5, 3));
+// });

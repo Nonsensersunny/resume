@@ -9,11 +9,12 @@
     <link rel="stylesheet" href="dist/css/style.min.css">
     <link rel="stylesheet" href="dist/css/fontello.min.css">
     <link rel="stylesheet" href="lib/zoom.css">
-    <!-- <script src="lib/av-min.js"></script> -->
+    <script src="lib/av-min.js"></script>
     <script src="https://unpkg.com/vue@2.5.2/dist/vue.js"></script>
-    <script src="lib/av-live-query-min.js"></script>
+   <!-- <script src="lib/av-live-query-min.js"></script> -->
     <script src="lib/vue-i18n.js"></script>
     <script src="lib/jquery.min.js"></script>
+    <script src="lib/wasm_exec.js"></script>
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -47,22 +48,22 @@
                         </span>
                     </dt>
                     <dd>
-                        <i class="icon-phone-1"></i>{{ $t('message.contact.phone') }}: 
+                        <i class="icon-phone-1"></i>{{ $t('message.contact.phone') }}:
                         <span v-if="!switch_status('contact')">{{ contact.tel }}</span>
                         <span v-else><input type="text" v-model="contact.tel"></span>
                     </dd>
                     <dd>
-                        <i class="icon-mail-alt"></i>{{ $t('message.contact.mail') }}: 
+                        <i class="icon-mail-alt"></i>{{ $t('message.contact.mail') }}:
                         <span v-if="!switch_status('contact')"><a :href="'mailto:' + contact.mail" target="_blank">{{ contact.mail }}</a></span>
                         <span v-else><input type="text" v-model="contact.mail"></span>
                     </dd>
                     <dd>
-                        <i class="icon-wechat"></i>{{ $t('message.contact.wechat') }}: 
+                        <i class="icon-wechat"></i>{{ $t('message.contact.wechat') }}:
                         <span v-if="!switch_status('contact')">{{ contact.wechat }}</span>
                         <span v-else><input type="text" v-model="contact.wechat"></span>
                     </dd>
                     <dd>
-                        <i class="icon-qq"></i>{{ $t('message.contact.qq') }}: 
+                        <i class="icon-qq"></i>{{ $t('message.contact.qq') }}:
                         <span v-if="!switch_status('contact')"><a :href="'http://wpa.qq.com/msgrd?v=3&uin=' + contact.qq + '&site=qq&menu=yes'" target="_blank">{{ contact.qq }}</a></span>
                         <span v-else><input type="text" v-model="contact.qq"></span>
                     </dd>
@@ -88,38 +89,38 @@
                         </span>
                     </dt>
                     <dd>
-                        <strong>{{ $t('message.basic.personal_info') }}:</strong> 
+                        <strong>{{ $t('message.basic.personal_info') }}:</strong>
                         <span v-if="!switch_status('basicInfo')">{{ basicInfo.name[i18n.locale] }} / {{ basicInfo.gender[i18n.locale] }}</span>
                         <span v-else><input type="text" v-model="basicInfo.name[i18n.locale]"> / <select v-model="basicInfo.gender[i18n.locale]"><option value="男">男</option><option value="女">女</option></select></span>
                     </dd>
                     <dd>
-                        <strong>{{ $t('message.basic.edu_background') }}:</strong> 
+                        <strong>{{ $t('message.basic.edu_background') }}:</strong>
                         <span v-if="!switch_status('basicInfo')">{{ basicInfo.edu_background[i18n.locale] }}</span>
                         <span v-else><input type="text" v-model="basicInfo.edu_background[i18n.locale]"></span>
                     </dd>
                     <dd>
-                        <strong>{{ $t('message.basic.undergraduate') }}:</strong> 
+                        <strong>{{ $t('message.basic.undergraduate') }}:</strong>
                         <span v-if="!switch_status('basicInfo')">{{ basicInfo.undergraduate[i18n.locale] }}</span>
                         <span v-else><input type="text" v-model="basicInfo.undergraduate[i18n.locale]"></span>
                     </dd>
                     <dd>
-                        <strong>{{ $t('message.basic.postgraduate') }}:</strong> 
+                        <strong>{{ $t('message.basic.postgraduate') }}:</strong>
                         <span v-if="!switch_status('basicInfo')">{{ basicInfo.postgraduate[i18n.locale] }}</span>
                         <span v-else><input type="text" v-model="basicInfo.postgraduate[i18n.locale]"></span>
                     </dd>
                     <dd>
-                        <strong>{{ $t('message.basic.working_year') }}:</strong> 
+                        <strong>{{ $t('message.basic.working_year') }}:</strong>
                         <span v-if="!switch_status('basicInfo')">{{ basicInfo.working_year[i18n.locale] }}</span>
                         <span v-else><input type="text" v-model="basicInfo.working_year[i18n.locale]"></span>
                     </dd>
                     <dd>
-                        <strong>{{ $t('message.basic.blog') }}:</strong> 
+                        <strong>{{ $t('message.basic.blog') }}:</strong>
                         <span v-if="!switch_status('basicInfo')"><a :href="basicInfo.blog" target="_blank">{{ basicInfo.blog }}</a></span>
                         <span v-else><input type="text" v-model="basicInfo.blog"></span>
-                        
+
                     </dd>
                     <dd>
-                        <strong>{{ $t('message.basic.github') }}:</strong> 
+                        <strong>{{ $t('message.basic.github') }}:</strong>
                         <span v-if="!switch_status('basicInfo')">
                             <a :href="basicInfo.github.url" target="_blank">{{ basicInfo.github.url }}</a>
                             <iframe :src="'https://ghbtns.com/github-btn.html?user=' + basicInfo.github.name + '&type=follow&count=true'" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
@@ -141,7 +142,7 @@
                             </li>
                         </ul>
                     </div>
-                    
+
                     <h3>{{ $t('message.experience.personal_pros') }}</h3>
                     <ul class="exp">
                         <li v-for="(pro, idx) in projects.projects" v-for="idx">
